@@ -121,33 +121,35 @@ class _MyHomePageState extends State<MyHomePage> {
           } else {
             return Row(
               children: [
-                SafeArea(
-                  child: NavigationRail(
-                    extended: constraints.maxWidth >= 600,
-                    labelType: NavigationRailLabelType.none,
-                    destinations: [
-                      NavigationRailDestination(
-                        icon: Icon(Icons.home),
-                        label: Text('Home'),
-                      ),
-                      NavigationRailDestination(
-                        icon: Icon(Icons.favorite),
-                        label: Text('Favorites'),
-                      ),
-                      NavigationRailDestination(
-                        icon: Icon(Icons.logout),
-                        label: Text('Log out'),
-                      ),
-                    ],
-                    selectedIndex: selectedIndex,
-                    selectedIconTheme: IconTheme.of(context),
-                    onDestinationSelected: (value) {
-                      setState(() {
-                        selectedIndex = value;
-                      });
-                    },
-                  ),
-                ),
+                if (selectedIndex != 2) ...[
+                  SafeArea(
+                    child: NavigationRail(
+                      extended: constraints.maxWidth >= 600,
+                      labelType: NavigationRailLabelType.none,
+                      destinations: [
+                        NavigationRailDestination(
+                          icon: Icon(Icons.home),
+                          label: Text('Home'),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(Icons.favorite),
+                          label: Text('Favorites'),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(Icons.logout),
+                          label: Text('Log out'),
+                        ),
+                      ],
+                      selectedIndex: selectedIndex,
+                      selectedIconTheme: IconTheme.of(context),
+                      onDestinationSelected: (value) {
+                        setState(() {
+                          selectedIndex = value;
+                        });
+                      },
+                    ),
+                  )
+                ],
                 Expanded(child: mainArea),
               ],
             );
@@ -180,18 +182,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Authentication')),
-      body: Padding(
-        padding: const EdgeInsets.all(50),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            MyCustomForm(),
-          ],
-        ),
-      ),
-    );
+    return MaterialApp(home: MyCustomForm());
   }
 }
 
@@ -338,88 +329,95 @@ class MyCustomFormState extends State<MyCustomForm> {
     final style = theme.textTheme.displayMedium!;
     // Build a Form widget using the _formKey created above.
     return Form(
-      key: _formKey,
-      child: Column(
-        children: <Widget>[
-          TextFormField(
-            controller: myControllerLogin,
-            decoration: InputDecoration(
-              hintText: 'login',
-            ),
-            style: style,
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-              onFieldSubmitted: (value) {
-                // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState!.validate()) {
-                  if (myControllerLogin.text == 'Pockey' &&
-                      myControllerPassword.text == 'mars') {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MyHomePage()));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text(
-                        'Wrong login or password',
-                      ),
-                      backgroundColor: Color.fromARGB(255, 113, 13, 6),
-                    ));
+        key: _formKey,
+        child: Card(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextFormField(
+                controller: myControllerLogin,
+                decoration: InputDecoration(
+                  hintText: 'login',
+                ),
+                style: style,
+                // The validator receives the text that the user has entered.
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
                   }
-                  // If the form is valid, display a snackbar. In the real world,
-                  // you'd often call a server or save the information in a database.
-                }
-              },
-              controller: myControllerPassword,
-              style: style,
-              // The validator receives the text that the user has entered.
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              obscureText: !_passwordVisible,
-              decoration: InputDecoration(
-                hintText: 'password',
-                suffixIcon: IconButton(
-                    icon: Icon(
-                        _passwordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Theme.of(context).primaryColorDark),
-                    onPressed: () =>
-                        setState(() => _passwordVisible = !_passwordVisible)),
-              )),
-          ElevatedButton(
-            onPressed: () {
-              // Validate returns true if the form is valid, or false otherwise.
-              if (_formKey.currentState!.validate()) {
-                if (myControllerLogin.text == 'Pockey' &&
-                    myControllerPassword.text == 'mars') {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MyHomePage()));
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text(
-                      'Wrong login or password',
-                    ),
-                    backgroundColor: Color.fromARGB(255, 113, 13, 6),
-                  ));
-                }
-                // If the form is valid, display a snackbar. In the real world,
-                // you'd often call a server or save the information in a database.
-              }
-            },
-            child: const Text('Submit'),
+                  return null;
+                },
+              ),
+              TextFormField(
+                  onFieldSubmitted: (value) {
+                    // Validate returns true if the form is valid, or false otherwise.
+                    if (_formKey.currentState!.validate()) {
+                      if (myControllerLogin.text == 'Pockey' &&
+                          myControllerPassword.text == 'mars') {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyHomePage()));
+                      } else {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text(
+                            'Wrong login or password',
+                          ),
+                          backgroundColor: Color.fromARGB(255, 113, 13, 6),
+                        ));
+                      }
+                      // If the form is valid, display a snackbar. In the real world,
+                      // you'd often call a server or save the information in a database.
+                    }
+                  },
+                  controller: myControllerPassword,
+                  style: style,
+                  // The validator receives the text that the user has entered.
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                  obscureText: !_passwordVisible,
+                  decoration: InputDecoration(
+                    hintText: 'password',
+                    suffixIcon: IconButton(
+                        icon: Icon(
+                            _passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Theme.of(context).primaryColorDark),
+                        onPressed: () => setState(
+                            () => _passwordVisible = !_passwordVisible)),
+                  )),
+              ElevatedButton(
+                onPressed: () {
+                  // Validate returns true if the form is valid, or false otherwise.
+                  if (_formKey.currentState!.validate()) {
+                    if (myControllerLogin.text == 'Pockey' &&
+                        myControllerPassword.text == 'mars') {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MyHomePage()));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text(
+                          'Wrong login or password',
+                        ),
+                        backgroundColor: Color.fromARGB(255, 113, 13, 6),
+                      ));
+                    }
+                    // If the form is valid, display a snackbar. In the real world,
+                    // you'd often call a server or save the information in a database.
+                  }
+                },
+                child: const Text('Submit'),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 }
